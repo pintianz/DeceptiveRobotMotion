@@ -50,10 +50,12 @@ public class Planner {
 		for(Coordinate c: inputPath){
 			float newX = c.getX() - getConditionalP(c)*( (-1)*(oldCostResult - oldCostInput) - ((falseGoalCoord.getX()-c.getX())/getCostBetween(c,falseGoalCoord)));
 			float newY = c.getY() - getConditionalP(c)*( (-1)*(oldCostResult - oldCostInput) - ((falseGoalCoord.getY()-c.getY())/getCostBetween(c,falseGoalCoord)));
+			System.out.println(c.toString());
 			System.out.println("XXX "+ ((falseGoalCoord.getX()-c.getX())/getCostBetween(c,falseGoalCoord)));
+			System.out.println("YYY "+ ((falseGoalCoord.getY()-c.getY())/getCostBetween(c,falseGoalCoord)));
 			System.out.println("CondP "+ getConditionalP(c));
-			
-			System.out.println("new x "+ newX + " new y "+newY);
+//			
+//			System.out.println("new x "+ newX + " new y "+newY);
 			
 			oldCostInput = c.getCost();
 			Coordinate tempC = new Coordinate(newX, newY);
@@ -72,8 +74,8 @@ public class Planner {
 		float demoninatorExp = (-1)*(getCostBetween(robotCoord,falseGoalCoord));
 		float demoninator = (float)Math.pow(Math.E, demoninatorExp);
 		
-		System.out.println("numerator "+ numerator + " demoninator "+demoninator);
-		System.out.println("numerator/demoninator "+ (numerator/demoninator));
+//		System.out.println("numerator "+ numerator + " demoninator "+demoninator);
+//		System.out.println("numerator/demoninator "+ (numerator/demoninator));
 		
 		return normalizerVal*(numerator/demoninator);
 	}
