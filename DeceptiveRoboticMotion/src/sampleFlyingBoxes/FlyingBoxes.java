@@ -89,6 +89,17 @@ public class FlyingBoxes {
     }
 
     public FlyingBoxes() {
+    	List<Drawable> drawables;
+    	drawables = new ArrayList<>(25);
+        for (int index = 0; index < 25; index++) {
+            int x = (int) (Math.random() * 190);
+            int y = (int) (Math.random() * 190);
+            drawables.add(new Box(x, y));
+        }
+
+    	TestPane tp = new TestPane(drawables);
+    	
+    	
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -100,36 +111,29 @@ public class FlyingBoxes {
                 JFrame frame = new JFrame("Testing");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setLayout(new BorderLayout());
-                frame.add(new TestPane());
+                frame.add(tp);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
             }
         });
+        Timer timer = new Timer(40, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Drawable d : drawables) {
+                    d.update(tp);
+                }
+                tp.repaint();
+            }
+        });
+        timer.start();
     }
 
     public class TestPane extends JPanel {
-
-        private List<Drawable> drawables;
-
-        public TestPane() {
-            drawables = new ArrayList<>(25);
-            for (int index = 0; index < 25; index++) {
-                int x = (int) (Math.random() * 190);
-                int y = (int) (Math.random() * 190);
-                drawables.add(new Box(x, y));
-            }
-
-            Timer timer = new Timer(40, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    for (Drawable d : drawables) {
-                        d.update(TestPane.this);
-                    }
-                    repaint();
-                }
-            });
-            timer.start();
+    	List<Drawable> drawables;
+        public TestPane(List<Drawable> drawables) {
+        	this.drawables = drawables;
+            
         }
 
         @Override

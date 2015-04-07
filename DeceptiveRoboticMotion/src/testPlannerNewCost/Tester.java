@@ -1,9 +1,6 @@
-package testPlanner;
+package testPlannerNewCost;
 
 import java.util.ArrayList;
-
-import testPlannerNewCost.Coordinate;
-import testPlannerNewCost.Planner;
 
 public class Tester {
 
@@ -24,7 +21,7 @@ public class Tester {
 		
 		System.out.println("\n\n=========DeceptiveLoop=========");
 		ArrayList<Coordinate> resultDeceptiveLoop = resultDeceptive3;
-		for(int i=0; i< 10; i++){
+		for(int i=0; i< 14; i++){
 			resultDeceptiveLoop = planner.generateDeceptivePath(resultDeceptiveLoop);
 		}
 		
@@ -33,7 +30,7 @@ public class Tester {
 			System.out.println(resultOptimal.get(i).toString()+", "+resultDeceptive.get(i).toString()+","+resultDeceptive2.get(i).toString()+","+resultDeceptive3.get(i).toString()+",");
 		}
 		
-		System.out.println("\n\n=========DeceptiveLoop***=========");
+		System.out.println("\n\n=========DeceptiveLoop**=========");
 		
 		for(int i =0; i<resultOptimal.size();i++){
 			System.out.println(resultDeceptiveLoop.get(i).toString()+",");
