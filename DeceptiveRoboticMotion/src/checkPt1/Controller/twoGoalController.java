@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import checkPt1.Model.Coordinate;
 import checkPt1.Model.Catcher;
 import checkPt1.Model.Drawable;
 import checkPt1.Model.Goal;
@@ -21,6 +23,10 @@ import checkPt1.View.TestPane;
 
 public class twoGoalController {
 	
+	public static final float numOfWayPoint = 10;
+	public static final float normalizerVal = 1;
+	
+	
 	private List<Drawable> drawables;
 	Goal g1;
 	Goal g2;
@@ -28,24 +34,37 @@ public class twoGoalController {
 	Robot robot;
 	Catcher catcher;
 	TestPane tp;
+	PlannerObj planner;
 	
     public twoGoalController() {
-    	private List<Drawable> drawables= null;
-    	Goal g1 = new Goal();
-    	Goal g2 = new Goal();
-    	Goal trueGoal = pickTrueGoal(g1, g2);
-    	Robot robot = new Robot();
-    	Catcher catcher = new Catcher();
+    	drawables= new ArrayList<Drawable>();
+    	Goal g1 = new Goal(200,100, true);
+    	Goal g2 = new Goal(0,100, false);
+    	//Goal trueGoal = pickTrueGoal(g1, g2);
+    	Robot robot = new Robot(100,0);
+    	//Catcher catcher = new Catcher(100,100);
+    	planner = new Planner(robot, g1, g2, numOfWayPoint, normalizerVal);
+    	
+    	
     	drawables.add(g1);
     	drawables.add(g2);
     	drawables.add(trueGoal);
     	drawables.add(robot);
-    	drawables.add(catcher);
+    	//drawables.add(catcher);
     	
     	tp = new TestPane(drawables);
     }
     
-    public void runTest(){
+    public void runTest(final String testType){
+    	
+    	ArrayList<Coordinate> optimalPath = planner.generateOptimalPath();
+    	ArrayList<Coordinate> resultDeceptiveLoop = optimalPath;
+		for(int i=0; i< 17; i++){
+			resultDeceptiveLoop = planner.generateDeceptivePath(resultDeceptiveLoop);
+		}
+		robot.setTrajectory(resultDeceptiveLoop);
+		
+    	
     	EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -54,7 +73,7 @@ public class twoGoalController {
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 }
 
-                JFrame frame = new JFrame("Testing");
+                JFrame frame = new JFrame(testType + " - Testing");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setLayout(new BorderLayout());
                 frame.add(tp);

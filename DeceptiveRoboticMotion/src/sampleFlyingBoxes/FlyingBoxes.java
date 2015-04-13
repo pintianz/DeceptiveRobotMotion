@@ -89,7 +89,7 @@ public class FlyingBoxes {
     }
 
     public FlyingBoxes() {
-    	List<Drawable> drawables;
+    	final List<Drawable> drawables;
     	drawables = new ArrayList<>(25);
         for (int index = 0; index < 25; index++) {
             int x = (int) (Math.random() * 190);
@@ -97,7 +97,7 @@ public class FlyingBoxes {
             drawables.add(new Box(x, y));
         }
 
-    	TestPane tp = new TestPane(drawables);
+    	final TestPane tp = new TestPane(drawables);
     	
     	
         EventQueue.invokeLater(new Runnable() {

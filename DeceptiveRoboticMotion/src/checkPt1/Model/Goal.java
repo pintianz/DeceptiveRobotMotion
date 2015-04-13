@@ -6,13 +6,13 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
-public class Goal extends CoreObject {
+public class Goal extends Coordinate implements Drawable {
 
 	ArrayList<CoreObject> occupiedList;
 	boolean trueGoal;
 	
-	public Goal(int x, int y, int width, int height, boolean trueGoal) {
-		super(x, y, width, height);
+	public Goal(float x, float y, boolean trueGoal) {
+		super(x, y);
 		occupiedList = new ArrayList<CoreObject>();
 		this.trueGoal = trueGoal;
 		// TODO Auto-generated constructor stub

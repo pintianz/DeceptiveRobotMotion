@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
-public class Catcher extends CoreObject {
+public class Catcher extends Coordinate implements Drawable {
 
 	private Robot robot;
 	private ArrayList<Goal> goalList;
@@ -15,8 +15,8 @@ public class Catcher extends CoreObject {
 	private float scoreThreshold;
 	private float speed;
 	
-	public Catcher(int x, int y, int width, int height, Robot robot, ArrayList<Goal> goalList, float confidenceThreshold, float scoreThreshold, float speed) {
-		super(x, y, width, height);
+	public Catcher(float x, float y, Robot robot, ArrayList<Goal> goalList, float confidenceThreshold, float scoreThreshold, float speed) {
+		super(x, y);
 		this.robot=robot;
 		this.goalList = goalList;
 		goalPredicted = null;
