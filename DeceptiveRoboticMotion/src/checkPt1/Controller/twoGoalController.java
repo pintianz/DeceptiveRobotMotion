@@ -37,18 +37,19 @@ public class twoGoalController {
 	
     public twoGoalController() {
     	drawables= new ArrayList<Drawable>();
-    	robot = new Robot(60,0);
-    	g1 = new Goal(120,60, true, robot);
-    	g2 = new Goal(0,60, false, robot);
-    	//Goal trueGoal = pickTrueGoal(g1, g2);
-    	//Catcher catcher = new Catcher(100,100);
+    	robot = new Robot(10,0);
+    	g1 = new Goal(20,10, true, robot);
+    	g2 = new Goal(0,10, false, robot);
+    	ArrayList<Goal> goalList = new ArrayList<Goal>();
+    	goalList.add(g1);
+    	goalList.add(g2);
+    	catcher = new Catcher(10,10, robot, g1,g2, normalizerVal, 0, 0);
     	planner = new Planner(robot, g1, g2, numOfWayPoint, normalizerVal);
-    	
     	
     	drawables.add(g1);
     	drawables.add(g2);
     	drawables.add(robot);
-    	//drawables.add(catcher);
+    	drawables.add(catcher);
     	
     	tp = new TestPane(drawables);
     }
@@ -60,6 +61,14 @@ public class twoGoalController {
 		for(int i=0; i< 17; i++){
 			resultDeceptiveLoop = planner.generateDeceptivePath(resultDeceptiveLoop);
 		}
+		for(Coordinate c: resultDeceptiveLoop){
+			scaleVisual(c);
+		}
+		scaleVisual(robot);
+		scaleVisual(g1);
+		scaleVisual(g2);
+		scaleVisual(catcher);
+		catcher.setRStart(robot);
 		resultDeceptiveLoop.add(g1);
 		robot.setTrajectory(resultDeceptiveLoop);
 		
@@ -81,7 +90,7 @@ public class twoGoalController {
                 frame.setVisible(true);
             }
         });
-    	Timer timer = new Timer(40, new ActionListener() {
+    	Timer timer = new Timer(10, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	for (Drawable d : drawables) {
@@ -92,7 +101,10 @@ public class twoGoalController {
         });
         timer.start();
     }
-    
+    private void scaleVisual(Coordinate c){
+    	c.setX(c.getX()*10);
+    	c.setY(c.getY()*10);
+    }
 
     private Goal pickTrueGoal(Goal g1, Goal g2){
     	int num = randomWithRange(1,2);

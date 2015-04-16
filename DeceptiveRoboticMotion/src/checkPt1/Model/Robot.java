@@ -12,10 +12,12 @@ public class Robot extends Coordinate implements Drawable {
 	float deltaX;
 	float deltaY;
 	boolean isMoving;
+	public float costSoFar;
 	public Robot(float x, float y) {
         super(x,y);
         trajectory = null;
         isMoving = true;
+        costSoFar = 0;
     }
 	
 	public void setTrajectory(ArrayList<Coordinate> trajectory){
@@ -41,9 +43,6 @@ public class Robot extends Coordinate implements Drawable {
 		return;
 	}
 	
-	private float getCostBetween(Coordinate coord1, Coordinate coord2){
-		return (float)(Math.sqrt( Math.pow((coord1.getX()-coord2.getX()),2) + Math.pow((coord1.getY()-coord2.getY()),2)));
-	}
 	
 	@Override
 	public void update(JComponent comp) {
@@ -59,9 +58,13 @@ public class Robot extends Coordinate implements Drawable {
 				}
 			} else {
 				if(Math.abs(getX()-curWayPoint.getX())<Math.abs(deltaX)){
+					float deltaCost = getCostBetween(this, curWayPoint);
+					costSoFar =+ deltaCost;
 					setX(curWayPoint.getX());
 					setY(curWayPoint.getY());
 				} else {
+					float deltaCost = (float)(Math.sqrt( Math.pow((getX()-(getX()+deltaX)),2) + Math.pow((getY()-(getY()+deltaY)),2)));
+					costSoFar =+ deltaCost;
 					setX(getX()+deltaX);
 					setY(getY()+deltaY);
 				}

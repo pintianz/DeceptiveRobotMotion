@@ -26,7 +26,7 @@ public class TestPane extends JPanel {
     
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(200, 200);
+        return new Dimension(400, 400);
     }
 
     @Override
