@@ -30,7 +30,6 @@ public class twoGoalController {
 	private List<Drawable> drawables;
 	Goal g1;
 	Goal g2;
-	Goal trueGoal;
 	Robot robot;
 	Catcher catcher;
 	TestPane tp;
@@ -38,17 +37,16 @@ public class twoGoalController {
 	
     public twoGoalController() {
     	drawables= new ArrayList<Drawable>();
-    	Goal g1 = new Goal(200,100, true);
-    	Goal g2 = new Goal(0,100, false);
+    	robot = new Robot(60,0);
+    	g1 = new Goal(120,60, true, robot);
+    	g2 = new Goal(0,60, false, robot);
     	//Goal trueGoal = pickTrueGoal(g1, g2);
-    	Robot robot = new Robot(100,0);
     	//Catcher catcher = new Catcher(100,100);
     	planner = new Planner(robot, g1, g2, numOfWayPoint, normalizerVal);
     	
     	
     	drawables.add(g1);
     	drawables.add(g2);
-    	drawables.add(trueGoal);
     	drawables.add(robot);
     	//drawables.add(catcher);
     	
@@ -62,6 +60,7 @@ public class twoGoalController {
 		for(int i=0; i< 17; i++){
 			resultDeceptiveLoop = planner.generateDeceptivePath(resultDeceptiveLoop);
 		}
+		resultDeceptiveLoop.add(g1);
 		robot.setTrajectory(resultDeceptiveLoop);
 		
     	

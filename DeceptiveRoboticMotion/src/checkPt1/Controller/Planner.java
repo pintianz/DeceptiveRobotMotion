@@ -27,10 +27,10 @@ public class Planner implements PlannerObj{
 		float curX = robotCoord.getX();
 		float curY = robotCoord.getY();
 		
-		System.out.println("deltaX: "+deltaX);
-		System.out.println("curX: "+curX);
-		System.out.println("deltaY: "+deltaY);
-		System.out.println("curY: "+curY);
+//		System.out.println("deltaX: "+deltaX);
+//		System.out.println("curX: "+curX);
+//		System.out.println("deltaY: "+deltaY);
+//		System.out.println("curY: "+curY);
 		
 		while(Math.abs(curX+deltaX)<Math.abs(trueGoalCoord.getX())){
 			curX = curX+deltaX;
@@ -59,10 +59,10 @@ public class Planner implements PlannerObj{
 			}
 			float newX = c.getX() + deltaX;
 			float newY = c.getY() + deltaY;
-			System.out.println(c.toString());
-			System.out.println("XXX "+ ((falseGoalCoord.getX()-c.getX())/getCostBetween(c,falseGoalCoord)));
-			System.out.println("YYY "+ ((falseGoalCoord.getY()-c.getY())/getCostBetween(c,falseGoalCoord)));
-			System.out.println("CondP "+ getConditionalP(c));
+//			System.out.println(c.toString());
+//			System.out.println("XXX "+ ((falseGoalCoord.getX()-c.getX())/getCostBetween(c,falseGoalCoord)));
+//			System.out.println("YYY "+ ((falseGoalCoord.getY()-c.getY())/getCostBetween(c,falseGoalCoord)));
+//			System.out.println("CondP "+ getConditionalP(c));
 //			
 //			System.out.println("new x "+ newX + " new y "+newY);
 			

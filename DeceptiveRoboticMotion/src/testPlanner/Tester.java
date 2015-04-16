@@ -8,9 +8,9 @@ import testPlannerNewCost.Planner;
 public class Tester {
 
 	public static void main(String[] args) {
-		Coordinate robotCoord = new Coordinate(10,0);
-		Coordinate trueGoalCoord = new Coordinate(20,10);
-		Coordinate falseGoalCoord = new Coordinate(0,10);
+		Coordinate robotCoord = new Coordinate(60,0);
+		Coordinate trueGoalCoord = new Coordinate(120,60);
+		Coordinate falseGoalCoord = new Coordinate(0,60);
 		float numOfWayPoint = 10;
 		Planner planner = new Planner(robotCoord, trueGoalCoord, falseGoalCoord, numOfWayPoint, 1f);
 		System.out.println("=========OPTIMAL=========");
@@ -24,7 +24,7 @@ public class Tester {
 		
 		System.out.println("\n\n=========DeceptiveLoop=========");
 		ArrayList<Coordinate> resultDeceptiveLoop = resultDeceptive3;
-		for(int i=0; i< 10; i++){
+		for(int i=0; i< 14; i++){
 			resultDeceptiveLoop = planner.generateDeceptivePath(resultDeceptiveLoop);
 		}
 		

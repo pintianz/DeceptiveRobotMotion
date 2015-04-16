@@ -11,14 +11,21 @@ public class Robot extends Coordinate implements Drawable {
 	Coordinate curWayPoint;
 	float deltaX;
 	float deltaY;
+	boolean isMoving;
 	public Robot(float x, float y) {
         super(x,y);
         trajectory = null;
+        isMoving = true;
     }
 	
 	public void setTrajectory(ArrayList<Coordinate> trajectory){
 		this.trajectory = trajectory;
-		curWayPoint = trajectory.get(0);
+		for(int i=0; i< trajectory.size(); i++){
+			System.out.println(trajectory.get(i).toString());
+		}
+		curWayPoint = trajectory.remove(0);
+		setDeltaX();
+		setDeltaY();
 	}
 	
 	private void setDeltaX(){
@@ -40,22 +47,26 @@ public class Robot extends Coordinate implements Drawable {
 	
 	@Override
 	public void update(JComponent comp) {
-		x = getWayPointX;
-        y += yDelta;
-        if (x < 0) {
-            x = 0;
-            xDelta *= -1;
-        } else if (x + width > comp.getWidth()) {
-            x = comp.getWidth() - width;
-            xDelta *= -1;
-        }
-        if (y < 0) {
-            y = 0;
-            yDelta *= -1;
-        } else if (y + height > comp.getHeight()) {
-            y = comp.getHeight() - height;
-            yDelta *= -1;
-        }
+		if(isMoving){
+			if(getX() == curWayPoint.getX() && getY() == curWayPoint.getY() ){
+				if(trajectory.size()>0){
+					curWayPoint = trajectory.remove(0);
+					setDeltaX();
+					setDeltaY();
+					
+				} else {
+					isMoving = false;
+				}
+			} else {
+				if(Math.abs(getX()-curWayPoint.getX())<Math.abs(deltaX)){
+					setX(curWayPoint.getX());
+					setY(curWayPoint.getY());
+				} else {
+					setX(getX()+deltaX);
+					setY(getY()+deltaY);
+				}
+			}
+		}
 	}
 
 	@Override

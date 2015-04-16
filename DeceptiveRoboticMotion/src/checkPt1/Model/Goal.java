@@ -10,24 +10,27 @@ public class Goal extends Coordinate implements Drawable {
 
 	ArrayList<CoreObject> occupiedList;
 	boolean trueGoal;
-	
-	public Goal(float x, float y, boolean trueGoal) {
+	Robot robot;
+	boolean yetToReach;
+	public Goal(float x, float y, boolean trueGoal, Robot robot) {
 		super(x, y);
 		occupiedList = new ArrayList<CoreObject>();
 		this.trueGoal = trueGoal;
+		this.robot = robot;
+		yetToReach = true;
 		// TODO Auto-generated constructor stub
 	}
 
-	public boolean contains(CoreObject co){
-		for(CoreObject c: occupiedList){
-			if(c == co)return true;
-		}
-		return false;
+	public boolean contains(Coordinate co){
+		return (co.getX() == getX() && co.getY() == getY());
 	}
 	
 	@Override
 	public void update(JComponent comp) {
-
+		if(trueGoal && contains(robot) && yetToReach){
+			System.out.println("ROBOT REACHED THE GOAL");
+			yetToReach = false;
+		}
 	}
 
 	@Override
