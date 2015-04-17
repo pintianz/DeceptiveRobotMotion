@@ -43,7 +43,7 @@ public class twoGoalController {
     	ArrayList<Goal> goalList = new ArrayList<Goal>();
     	goalList.add(g1);
     	goalList.add(g2);
-    	catcher = new Catcher(10,10, robot, g1,g2, normalizerVal, 0, 0);
+    	catcher = new Catcher(10,10, robot, g1,g2, normalizerVal, 0.99995, 0);
     	planner = new Planner(robot, g1, g2, numOfWayPoint, normalizerVal);
     	
     	drawables.add(g1);

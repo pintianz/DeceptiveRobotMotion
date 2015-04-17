@@ -11,14 +11,19 @@ public class Catcher extends Coordinate implements Drawable {
 	private Robot robot;
 	private ArrayList<Goal> goalList;
 	private Goal goalPredicted;
-	private float confidenceThreshold;
-	private float distanceThreshold;
+	private double confidenceThreshold;
+	private double distanceThreshold;
 	private Coordinate rStart;
 	private float normalizerVal;
 	private Goal tg;
 	private Goal fg;
+	private boolean setGoal;
+	private Coordinate targetGoal;
+	private Coordinate curWayPoint;
+	private float deltaY;
+	private float deltaX;
 	
-	public Catcher(float x, float y, Robot robot, Goal tg, Goal fg, float normalizerVal, float confidenceThreshold, float distanceThreshold) {
+	public Catcher(float x, float y, Robot robot, Goal tg, Goal fg, float normalizerVal, double confidenceThreshold, double distanceThreshold) {
 		super(x, y);
 		this.robot=robot;
 		this.goalList = goalList;
@@ -34,9 +39,45 @@ public class Catcher extends Coordinate implements Drawable {
 	public void setRStart(Coordinate robot){
 		rStart = new Coordinate(robot.getX(),robot.getY());
 	}
+	
+	private void setDeltaX(){
+		float wpDistance = getCostBetween(this, curWayPoint);
+		wpDistance = wpDistance *10;
+		deltaX = (curWayPoint.getX() - getX())/wpDistance;
+		return;
+	}
+	private void setDeltaY(){
+		float wpDistance = getCostBetween(this, curWayPoint);
+		wpDistance = wpDistance *10;
+		deltaY = (curWayPoint.getY() - getY())/wpDistance;
+		return;
+	}
 
 	@Override
 	public void update(JComponent comp) {
+		if(!setGoal){
+			if(getConditionalP(tg)/(getConditionalP(tg)+getConditionalP(fg)) > confidenceThreshold){
+				setGoal = true;
+				curWayPoint = tg;
+				setDeltaX();
+				setDeltaY();
+			} else if (getConditionalP(fg)/(getConditionalP(tg)+getConditionalP(fg)) > confidenceThreshold) {
+				setGoal = true;
+				curWayPoint = fg;
+				setDeltaX();
+				setDeltaY();
+			}
+		} else {
+			if(Math.abs(getX()-curWayPoint.getX())<Math.abs(deltaX)){
+				float deltaCost = getCostBetween(this, curWayPoint);
+				setX(curWayPoint.getX());
+				setY(curWayPoint.getY());
+			} else {
+				float deltaCost = (float)(Math.sqrt( Math.pow((getX()-(getX()+deltaX)),2) + Math.pow((getY()-(getY()+deltaY)),2)));
+				setX(getX()+deltaX);
+				setY(getY()+deltaY);
+			}
+		}
 		System.out.println("tg/fg - "+getConditionalP(tg)/(getConditionalP(tg)+getConditionalP(fg)));
 		System.out.println("fg/tg - "+getConditionalP(fg)/(getConditionalP(tg)+getConditionalP(fg)));
 
