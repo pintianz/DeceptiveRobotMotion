@@ -22,11 +22,12 @@ public class Catcher extends Coordinate implements Drawable {
 	private Coordinate curWayPoint;
 	private float deltaY;
 	private float deltaX;
+	private float robotTotalCost;
+	float speed;
 	
-	public Catcher(float x, float y, Robot robot, Goal tg, Goal fg, float normalizerVal, double confidenceThreshold, double distanceThreshold) {
+	public Catcher(float x, float y, Robot robot, Goal tg, Goal fg, float normalizerVal, double confidenceThreshold, double distanceThreshold,float speed) {
 		super(x, y);
 		this.robot=robot;
-		this.goalList = goalList;
 		goalPredicted = null;
 		this.confidenceThreshold = confidenceThreshold;
 		this.distanceThreshold = distanceThreshold;
@@ -34,8 +35,12 @@ public class Catcher extends Coordinate implements Drawable {
 		this.normalizerVal = normalizerVal;
 		this.tg = tg;
 		this.fg=fg;
+		robotTotalCost = 0;
+		this.speed = speed;
 	}
-	
+	public void setRTotalCost(float robotTotalCost){
+		this.robotTotalCost = robotTotalCost;
+	}
 	public void setRStart(Coordinate robot){
 		rStart = new Coordinate(robot.getX(),robot.getY());
 	}
@@ -43,20 +48,33 @@ public class Catcher extends Coordinate implements Drawable {
 	private void setDeltaX(){
 		float wpDistance = getCostBetween(this, curWayPoint);
 		wpDistance = wpDistance *10;
-		deltaX = (curWayPoint.getX() - getX())/wpDistance;
+		deltaX = ((curWayPoint.getX() - getX())/wpDistance)*speed;
 		return;
 	}
 	private void setDeltaY(){
 		float wpDistance = getCostBetween(this, curWayPoint);
 		wpDistance = wpDistance *10;
-		deltaY = (curWayPoint.getY() - getY())/wpDistance;
+		deltaY = ((curWayPoint.getY() - getY())/wpDistance)*speed;
 		return;
 	}
 
 	@Override
 	public void update(JComponent comp) {
 		if(!setGoal){
-			if(getConditionalP(tg)/(getConditionalP(tg)+getConditionalP(fg)) > confidenceThreshold){
+			if(robot.costSoFar/robotTotalCost>distanceThreshold){
+				if(getConditionalP(tg)/(getConditionalP(tg)+getConditionalP(fg)) > 0.5){
+					setGoal = true;
+					curWayPoint = tg;
+					setDeltaX();
+					setDeltaY();
+				} else {
+					setGoal = true;
+					curWayPoint = fg;
+					setDeltaX();
+					setDeltaY();
+				}
+			} 
+			else if(getConditionalP(tg)/(getConditionalP(tg)+getConditionalP(fg)) > confidenceThreshold){
 				setGoal = true;
 				curWayPoint = tg;
 				setDeltaX();
@@ -69,18 +87,13 @@ public class Catcher extends Coordinate implements Drawable {
 			}
 		} else {
 			if(Math.abs(getX()-curWayPoint.getX())<Math.abs(deltaX)){
-				float deltaCost = getCostBetween(this, curWayPoint);
 				setX(curWayPoint.getX());
 				setY(curWayPoint.getY());
 			} else {
-				float deltaCost = (float)(Math.sqrt( Math.pow((getX()-(getX()+deltaX)),2) + Math.pow((getY()-(getY()+deltaY)),2)));
 				setX(getX()+deltaX);
 				setY(getY()+deltaY);
 			}
 		}
-		System.out.println("tg/fg - "+getConditionalP(tg)/(getConditionalP(tg)+getConditionalP(fg)));
-		System.out.println("fg/tg - "+getConditionalP(fg)/(getConditionalP(tg)+getConditionalP(fg)));
-
 	}
 
 	@Override
@@ -96,11 +109,6 @@ public class Catcher extends Coordinate implements Drawable {
 		float numerator = (float)Math.pow(Math.E, numeratorExp);
 		float demoninatorExp = (-1)*(getCostBetween(rStart,goalCoord)/10);
 		float demoninator = (float)Math.pow(Math.E, demoninatorExp);
-//		System.out.println("rStart"+rStart.toString());
-//		System.out.println("+++"+goalCoord.toString());
-//		System.out.println("*****"+demoninator);
-		
-		//return (float) ((float) 1-Math.exp(-1*(numerator/demoninator)));
 		return numerator/demoninator;
 	}
 }

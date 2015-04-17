@@ -22,9 +22,6 @@ public class Robot extends Coordinate implements Drawable {
 	
 	public void setTrajectory(ArrayList<Coordinate> trajectory){
 		this.trajectory = trajectory;
-		for(int i=0; i< trajectory.size(); i++){
-			System.out.println(trajectory.get(i).toString());
-		}
 		curWayPoint = trajectory.remove(0);
 		setDeltaX();
 		setDeltaY();
@@ -59,12 +56,12 @@ public class Robot extends Coordinate implements Drawable {
 			} else {
 				if(Math.abs(getX()-curWayPoint.getX())<Math.abs(deltaX)){
 					float deltaCost = getCostBetween(this, curWayPoint);
-					costSoFar =+ deltaCost;
+					costSoFar =costSoFar + deltaCost;
 					setX(curWayPoint.getX());
 					setY(curWayPoint.getY());
 				} else {
 					float deltaCost = (float)(Math.sqrt( Math.pow((getX()-(getX()+deltaX)),2) + Math.pow((getY()-(getY()+deltaY)),2)));
-					costSoFar =+ deltaCost;
+					costSoFar =costSoFar + deltaCost;
 					setX(getX()+deltaX);
 					setY(getY()+deltaY);
 				}

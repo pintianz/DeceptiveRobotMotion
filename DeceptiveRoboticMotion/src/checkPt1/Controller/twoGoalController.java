@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,23 +35,24 @@ public class twoGoalController {
 	Catcher catcher;
 	TestPane tp;
 	PlannerObj planner;
+	JFrame frame;
 	
-    public twoGoalController() {
+    public twoGoalController(float catcherConfidenceThreshold, float catcherDistanceThreshold,PrintWriter writer) {
     	drawables= new ArrayList<Drawable>();
     	robot = new Robot(10,0);
-    	g1 = new Goal(20,10, true, robot);
-    	g2 = new Goal(0,10, false, robot);
+    	g1 = new Goal(20,10, true, robot, catcherConfidenceThreshold, catcherDistanceThreshold, writer);
+    	g2 = new Goal(0,10, false, robot, catcherConfidenceThreshold, catcherDistanceThreshold, writer);
     	ArrayList<Goal> goalList = new ArrayList<Goal>();
     	goalList.add(g1);
     	goalList.add(g2);
-    	catcher = new Catcher(10,10, robot, g1,g2, normalizerVal, 0.99995, 0);
+    	catcher = new Catcher(10,10, robot, g1,g2, normalizerVal, catcherConfidenceThreshold, catcherDistanceThreshold,2);
     	planner = new Planner(robot, g1, g2, numOfWayPoint, normalizerVal);
-    	
+    	g1.setCatcher(catcher);
+    	g2.setCatcher(catcher);
     	drawables.add(g1);
     	drawables.add(g2);
     	drawables.add(robot);
     	drawables.add(catcher);
-    	
     	tp = new TestPane(drawables);
     }
     
@@ -70,6 +72,9 @@ public class twoGoalController {
 		scaleVisual(catcher);
 		catcher.setRStart(robot);
 		resultDeceptiveLoop.add(g1);
+		
+		float robotTotalCost = getRTotalCost(resultDeceptiveLoop);
+		catcher.setRTotalCost(robotTotalCost);
 		robot.setTrajectory(resultDeceptiveLoop);
 		
     	
@@ -81,13 +86,13 @@ public class twoGoalController {
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 }
 
-                JFrame frame = new JFrame(testType + " - Testing");
+                frame = new JFrame(testType + " - Testing");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setLayout(new BorderLayout());
                 frame.add(tp);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+                //frame.setVisible(true);
             }
         });
     	Timer timer = new Timer(10, new ActionListener() {
@@ -97,6 +102,11 @@ public class twoGoalController {
                     d.update(tp);
                 }
                 tp.repaint();
+                if(!g1.yetToReach){
+                	//frame.setVisible(false); //you can't see me!
+                	frame.dispose(); //Destroy the JFrame object
+                	//System.exit(0);
+                }
             }
         });
         timer.start();
@@ -118,4 +128,16 @@ public class twoGoalController {
        int range = (max - min) + 1;     
        return (int)(Math.random() * range) + min;
     }
+    
+    public float getRTotalCost(ArrayList<Coordinate> resultDeceptiveLoop){
+		Coordinate cd1 = robot;
+		Coordinate cd2;
+		float robotTotalCost = 0;
+		for(int i = 1; i< resultDeceptiveLoop.size(); i++){
+			cd2 = resultDeceptiveLoop.get(i);
+			robotTotalCost = robotTotalCost + Coordinate.getCostBetween(cd1, cd2);
+			cd1 = cd2;
+		}
+		return robotTotalCost;
+	}
 }
